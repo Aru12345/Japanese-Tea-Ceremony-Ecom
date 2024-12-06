@@ -1,0 +1,42 @@
+body{
+    margin: 1%;
+    background:linear-gradient(90deg, #52cd52,#307f30, #42a74c,#228B22);
+}
+
+.main-heading{
+    color: azure;
+    font-style: italic;
+    opacity: 0.9;
+    text-shadow: 1px 1px 2px #aef9b5;
+}
+
+.nav-link{
+    color: azure;
+    font-weight: bold;
+}
+
+.nav-link:hover {
+    text-decoration: underline;
+    color: rgb(255, 223, 16);
+    
+}
+
+.main-content{
+    margin-top: 2%;
+}
+.main-introduction{
+    color: rgba(255, 255, 255, 0.876);
+    font-weight: bold;
+    font-style: italic;
+    display: flex;
+    justify-content: center;  /* Center horizontally */
+    align-items: center;      /* Center vertically */
+    height: 400px;
+   
+}
+
+.greeting{
+    color: rgb(255, 223, 16);
+    font-style: italic;
+    margin-left: 2%;
+}
