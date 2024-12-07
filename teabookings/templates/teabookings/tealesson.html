@@ -1,0 +1,26 @@
+{% extends "teabookings/layout.html" %}
+{% load static %}
+
+{% block body %}
+
+   <p class="teah">Begin each class by diving deep into the origins, traditions, and stories that make the tea special. Then, follow a guided, step-by-step demonstration of traditional preparation methods, ensuring you master the art of brewing. To complete the experience, receive expert tips on ideal pairings and occasions to enjoy the tea</p>
+   <div class="container ccon">
+   <div class="row ">
+
+   {% for lesson in tea %}
+ 
+   <div class="card col-lg-3 col-md-5 col-sm-10 eachcard" style="width:100%; height:25em">
+    <img class="card-img-top" src="{{ lesson.imgUrl }}" alt="Tea Card" style="width:100%; height:51%">
+    <div class="card-body">
+      <h6 class="card-title ctitle">{{ lesson.name }}</h6>
+      <p class="card-text"> Price: {{ lesson.price }}$</p>
+      <p class="card-text"> Difficulty: {{ lesson.difficulty }} </p>
+      <a href="{% url 'extradetails' id=lesson.id  %}" class="btn btn-primary moredetails">View Details</a>
+    </div>
+ 
+</div>
+   {% endfor%}
+    </div>
+    </div>
+
+{% endblock %}

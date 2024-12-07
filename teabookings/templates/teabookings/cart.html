@@ -1,0 +1,40 @@
+{% extends "teabookings/layout.html" %}
+{% load static %}
+
+{% block body %}
+<div class="container">
+    <h2 class="cartUI">Your Shopping Cart</h2>
+
+    {% if cart_details %}
+        <ul class="list-group">
+            {% for item in cart_details %}
+                <li class="list-group-item">
+                    <div class="row align-items-center">
+                        <div class="col-3">
+                            <img src="{{ item.imgUrl }}" alt="{{ item.name }}" class="img-fluid" style="max-height: 100px; object-fit: cover;">
+                        </div>
+                        <div class="col-5">
+                            <h5>{{ item.name }}</h5>
+                            <p>Price: ${{ item.price }}</p>
+                            <p>Quantity: {{ item.quantity }}</p>
+                            <p>Subtotal: ${{ item.subtotal }}</p>
+                            <div>
+                                <label for="date_{{ item.id }}">Select Date:</label>
+                                <input type="date" id="date_{{ item.id }}" name="date_{{ item.id }}" min="{{ today }}" required>
+                                <label for="time_{{ item.id }}">Select Time:</label>
+                                <input type="time" id="time_{{ item.id }}" name="time_{{ item.id }}" required>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+
+        <div class="text-right mt-3 cartUI">
+            <h4>Total Price: ${{ total_price }}</h4>
+        </div>
+    {% else %}
+        <p class="cartUI">Your cart is empty.</p>
+    {% endif %}
+</div>
+{% endblock %}

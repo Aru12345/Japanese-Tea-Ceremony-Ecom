@@ -35,8 +35,54 @@ body{
    
 }
 
-.greeting{
+.greeting {
     color: rgb(255, 223, 16);
     font-style: italic;
     margin-left: 2%;
+}
+
+.teah{
+    margin-left: 2%;
+    color: rgb(235, 244, 252);
+    font-style: italic;
+    font-weight: bold;
+}
+
+.eachcard{
+    margin: 4%;
+}
+.cardtext{
+    font-size: 200rem;
+}
+.ctitle{
+ 
+    height: 20%;
+}
+.card-title {
+    font-size: smaller;
+}
+
+.card-text{
+    font-size: smaller;}
+.moredetails{
+    background-color: rgb(0, 158, 105);
+    font-size: small;
+}
+
+.detail-card{
+    background-color: beige;
+    padding: 3%;
+    border-radius: 2%;
+    font-style: italic;
+    margin-top: 2%;
+
+}
+
+.info{
+   color: rgb(126, 158, 0);
+}
+
+.cartUI{
+  color: aliceblue;
+  font-style: italic;
 }
