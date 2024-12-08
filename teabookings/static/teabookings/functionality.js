@@ -79,7 +79,7 @@ document.addEventListener("DOMContentLoaded", function () {
     if (checkoutForm) {
         checkoutForm.addEventListener("submit", function (event) {
             event.preventDefault(); // Prevent the default form submission
-
+    
             fetch(checkoutForm.action, {
                 method: "POST",
                 headers: {
@@ -88,14 +88,9 @@ document.addEventListener("DOMContentLoaded", function () {
             })
                 .then((response) => response.json())
                 .then((data) => {
-                    if (data.id) {
-                        // Use Stripe.js to redirect to Checkout
-                        const stripe = stripe(checkoutForm.dataset.stripeKey);
-                        stripe.redirectToCheckout({ sessionId: data.id }).then((result) => {
-                            if (result.error) {
-                                alert(result.error.message);
-                            }
-                        });
+                    if (data.url) {
+                        // Redirect to Stripe Checkout URL
+                        window.location.href = data.url;
                     } else {
                         alert(data.error || "Failed to initiate checkout.");
                     }
@@ -103,6 +98,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 .catch((error) => console.error("Error initiating checkout:", error));
         });
     }
+    
 
 
     // Initial call to update the cart count when the page loads

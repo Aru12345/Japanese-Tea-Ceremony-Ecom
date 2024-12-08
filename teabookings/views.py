@@ -120,12 +120,12 @@ def remove_from_cart(request, item_id):
 
 def stripe_checkout(request):
     if not request.user.is_authenticated:
-        return redirect('login')
+        return JsonResponse({'error': 'User not authenticated'}, status=401)
 
     # Get the cart for the logged-in user
     cart = Cart.objects.filter(user=request.user).first()
     if not cart or not cart.items.exists():
-        return redirect('displaycart')  # Redirect to cart if empty
+        return JsonResponse({'error': 'Cart is empty'}, status=400)
 
     # Prepare Stripe line items
     line_items = []
@@ -142,16 +142,17 @@ def stripe_checkout(request):
         })
 
     # Create Stripe Checkout Session
-    session = stripe.checkout.Session.create(
-        payment_method_types=['card'],
-        line_items=line_items,
-        mode='payment',
-        success_url=request.build_absolute_uri('/success/'),
-        cancel_url=request.build_absolute_uri('/displaycart/'),
-    )
-
-    # Redirect to the Stripe Checkout page
-    return redirect(session.url)
+    try:
+        session = stripe.checkout.Session.create(
+            payment_method_types=['card'],
+            line_items=line_items,
+            mode='payment',
+            success_url=request.build_absolute_uri('/success/'),
+            cancel_url=request.build_absolute_uri('/displaycart'),
+        )
+        return JsonResponse({'url': session.url})
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
 
 
 def payment_success(request):
