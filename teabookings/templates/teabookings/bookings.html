@@ -1,0 +1,19 @@
+{% extends "teabookings/layout.html" %}
+{% block body %}
+<div class="container">
+    <h2>Your Bookings</h2>
+    <h4>Current Bookings</h4>
+    {% for booking in current_bookings %}
+        <p>{{ booking.tea_lesson.name }} - {{ booking.selected_date }}</p>
+    {% empty %}
+        <p>No current bookings.</p>
+    {% endfor %}
+
+    <h4>Past Bookings</h4>
+    {% for booking in past_bookings %}
+        <p>{{ booking.tea_lesson.name }} - {{ booking.selected_date }}</p>
+    {% empty %}
+        <p>No past bookings.</p>
+    {% endfor %}
+</div>
+{% endblock %}

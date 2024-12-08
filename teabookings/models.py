@@ -29,6 +29,7 @@ class CartItem(models.Model):
     tea_lesson = models.ForeignKey(TeaLesson, on_delete=models.CASCADE)
     quantity = models.IntegerField(default=1)
     selected_date = models.DateTimeField(null=True, blank=True)
+    is_booked = models.BooleanField(default=False) 
 
     def __str__(self):
         return f"{self.quantity} x {self.tea_lesson.name}"
