@@ -150,29 +150,17 @@ def stripe_checkout(request):
             success_url=request.build_absolute_uri('/success/'),
             cancel_url=request.build_absolute_uri('/displaycart'),
         )
+
+         # Clear the cart after session creation but before redirect
         return JsonResponse({'url': session.url})
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=500)
 
 
 def payment_success(request):
-    session_id = request.GET.get('session_id')
-    if session_id:
-        try:
-            # Optional: Retrieve the session details for validation
-            session = stripe.checkout.Session.retrieve(session_id)
-
-            # Clear the user's cart after successful payment
-            if request.user.is_authenticated:
-                cart = Cart.objects.filter(user=request.user).first()
-                if cart:
-                    cart.items.all().delete()  # Remove all items from the cart
-
-        except Exception as e:
-            # Log the error for debugging
-            print(f"Error clearing cart: {e}")
-
-    # Redirect to the success page
+    cart = Cart.objects.filter(user=request.user).first()
+    cart.items.all().delete()
+    cart.save()
     return render(request, 'teabookings/success.html')
 
 

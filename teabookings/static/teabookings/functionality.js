@@ -4,6 +4,9 @@ document.addEventListener("DOMContentLoaded", function () {
     const removeButtons = document.querySelectorAll(".rbtn");
     const checkoutForm = document.getElementById("checkout-form");
 
+    const dateInputs = document.querySelectorAll("input[type='date']");
+    const timeInputs = document.querySelectorAll("input[type='time']")
+   
     // Function to update the cart count dynamically
     function updateCartCount() {
         fetch("/cart-count/") // Ensure this URL matches your URL pattern
@@ -75,31 +78,55 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
+  
     // Attach event listener to Checkout form
     if (checkoutForm) {
-        checkoutForm.addEventListener("submit", function (event) {
+        checkoutForm.addEventListener("submit", async function (event) {
             event.preventDefault(); // Prevent the default form submission
+            let allFieldsFilled = true;
     
-            fetch(checkoutForm.action, {
-                method: "POST",
-                headers: {
-                    "X-CSRFToken": document.querySelector("[name=csrfmiddlewaretoken]").value,
-                },
-            })
-                .then((response) => response.json())
-                .then((data) => {
-                    if (data.url) {
-                        // Redirect to Stripe Checkout URL
-                        window.location.href = data.url;
-                    } else {
-                        alert(data.error || "Failed to initiate checkout.");
-                    }
-                })
-                .catch((error) => console.error("Error initiating checkout:", error));
+            // Validate date and time inputs
+            const dateInputs = document.querySelectorAll("input[type='date']");
+            const timeInputs = document.querySelectorAll("input[type='time']");
+    
+            // Optimize validation using a single loop
+            for (const input of [...dateInputs, ...timeInputs]) {
+                if (!input.value) {
+                    allFieldsFilled = false;
+                    input.classList.add("is-invalid"); // Add a visual indicator
+                } else {
+                    input.classList.remove("is-invalid");
+                }
+            }
+    
+            if (!allFieldsFilled) {
+                alert("Please fill in all required date and time fields.");
+                return; 
+            }
+    
+            // Proceed to Stripe Checkout
+            try {
+                const response = await fetch(checkoutForm.action, {
+                    method: "POST",
+                    headers: {
+                        "X-CSRFToken": document.querySelector("[name=csrfmiddlewaretoken]").value,
+                    },
+                });
+    
+                const data = await response.json();
+    
+                if (data.url) {
+                    // Redirect to Stripe Checkout URL
+                    window.location.href = data.url;
+                } else {
+                    alert(data.error || "Failed to initiate checkout.");
+                }
+            } catch (error) {
+                console.error("Error initiating checkout:", error);
+            }
         });
     }
     
-
 
     // Initial call to update the cart count when the page loads
     updateCartCount();
