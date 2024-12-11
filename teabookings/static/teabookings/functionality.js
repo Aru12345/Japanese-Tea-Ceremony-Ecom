@@ -6,6 +6,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const dateInputs = document.querySelectorAll("input[type='date']");
     const timeInputs = document.querySelectorAll("input[type='time']")
+
+    const searchInput = document.querySelector('.searchinput');
+    const resultsContainer = document.querySelector('#resultsContainer');
+    const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
    
     // Function to update the cart count dynamically
     function updateCartCount() {
@@ -126,6 +130,25 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         });
     }
+
+    searchInput.addEventListener('input', function () {
+        const query = searchInput.value;
+        fetch('/search/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrfToken, // Add CSRF token to headers
+            },
+            body: JSON.stringify({ search_query: query }),
+        })
+            .then(response => response.json())
+            .then(data => {
+                resultsContainer.innerHTML = data.html;
+            })
+            .catch(error => {
+                console.error('Error fetching search results:', error);
+            });
+    });
     
 
     // Initial call to update the cart count when the page loads

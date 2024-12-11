@@ -1,0 +1,19 @@
+{% extends "teabookings/layout.html" %}
+
+{% block body %}
+<a  href="{% url 'tealessons' %}" class="btn btn-primary">Back</a>
+{% for lesson in tea %}
+<div class="card col-lg-3 col-md-5 col-sm-10 eachcard" style="width:100%; height:25em">
+    <img class="card-img-top" src="{{ lesson.imgUrl }}" alt="Tea Card" style="width:100%; height:51%">
+    <div class="card-body">
+        <h6 class="card-title ctitle">{{ lesson.name }}</h6>
+        <p class="card-text"> Price: {{ lesson.price }}$</p>
+        <p class="card-text"> Difficulty: {{ lesson.difficulty }}</p>
+        <a href="{% url 'extradetails' id=lesson.id %}" class="btn btn-primary moredetails">View Details</a>
+    </div>
+</div>
+{% empty %}
+
+<p class="noresult">No results found.</p>
+{% endfor %}
+{% endblock %}

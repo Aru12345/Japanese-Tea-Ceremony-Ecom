@@ -4,6 +4,8 @@ from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
 from django.utils.timezone import now
+from django.template.loader import render_to_string
+from django.db.models import Q
 
 import stripe
 from django.conf import settings
@@ -163,6 +165,15 @@ def payment_success(request):
     cart.save()
     return render(request, 'teabookings/success.html')
 
+
+def search_tealessons(request):
+    if request.method == "POST":
+        query = request.POST.get('search_query', '')
+    else:
+        query = request.GET.get('search_query', '')
+
+    results = TeaLesson.objects.filter(Q(name__icontains=query)) if query else TeaLesson.objects.all()
+    return render(request, 'teabookings/search_results.html', {'tea': results})
 
 
 def login_view(request):

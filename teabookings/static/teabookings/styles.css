@@ -48,6 +48,14 @@ body{
     font-weight: bold;
 }
 
+.noresult{
+    margin: 3%;
+    color: rgb(235, 244, 252);
+    font-style: italic;
+    font-weight: bold;
+}
+
+
 .eachcard{
     margin: 4%;
 }
@@ -85,4 +93,8 @@ body{
 .cartUI{
   color: aliceblue;
   font-style: italic;
+}
+
+.search:hover {
+    transform: scale(1.1); /* Slightly enlarge the button on hover */
 }

@@ -5,6 +5,36 @@
 
    <p class="teah">Begin each class by diving deep into the origins, traditions, and stories that make the tea special. Then, follow a guided, step-by-step demonstration of traditional preparation methods, ensuring you master the art of brewing. To complete the experience, receive expert tips on ideal pairings and occasions to enjoy the tea</p>
    <div class="container ccon">
+    <div class="row ">
+      <div class="col-lg-6 col-sm-12">
+        <h1>Filter</h1>
+      </div>
+      <div class="col-lg-6 col-sm-12">
+        <form class="form-inline" method="POST" action="{% url 'search_tealessons' %}">
+          {% csrf_token %}
+          <input 
+              class="form-control mr-sm-2 searchinput" 
+              type="search" 
+              placeholder="Search" 
+              aria-label="Search" 
+              name="search_query" 
+              id="search-query"
+          >
+          <button class="btn my-2 my-sm-0 search" style="background-color:blue;" type="submit">🔍</button>
+      </form>
+      <div>
+    </div>
+  </div>
+
+
+    <div id="resultsContainer" class="row">
+       <!-- Dynamic search results will be inserted here -->
+    </div>
+ 
+
+
+
+   <div class="container ccon">
    <div class="row ">
 
    {% for lesson in tea %}
