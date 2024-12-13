@@ -4,8 +4,6 @@ document.addEventListener("DOMContentLoaded", function () {
     const removeButtons = document.querySelectorAll(".rbtn");
     const checkoutForm = document.getElementById("checkout-form");
 
-    const dateInputs = document.querySelectorAll("input[type='date']");
-    const timeInputs = document.querySelectorAll("input[type='time']")
 
     const searchInput = document.querySelector('.searchinput');
     const resultsContainer = document.querySelector('#resultsContainer');
