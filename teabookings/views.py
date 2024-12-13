@@ -6,10 +6,13 @@ from django.urls import reverse
 from django.utils.timezone import now
 from django.template.loader import render_to_string
 from django.db.models import Q
+from django.contrib import messages
+from datetime import datetime
+
 
 import stripe
 from django.conf import settings
-from .models import User, TeaLesson, Cart, CartItem
+from .models import User, TeaLesson, Cart, CartItem,Booking,BookingItem
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
 def index(request):
@@ -124,14 +127,29 @@ def stripe_checkout(request):
     if not request.user.is_authenticated:
         return JsonResponse({'error': 'User not authenticated'}, status=401)
 
-    # Get the cart for the logged-in user
     cart = Cart.objects.filter(user=request.user).first()
     if not cart or not cart.items.exists():
         return JsonResponse({'error': 'Cart is empty'}, status=400)
 
+    # Validate and save selected dates
+    for item in cart.items.all():
+        date_str = request.POST.get(f"date_{item.id}")
+        time_str = request.POST.get(f"time_{item.id}")
+        if date_str and time_str:
+            try:
+                selected_datetime = datetime.strptime(f"{date_str} {time_str}", "%Y-%m-%d %H:%M")
+                item.selected_date = selected_datetime
+                item.save()
+            except ValueError:
+                return JsonResponse({'error': f"Invalid date or time for {item.tea_lesson.name}"}, status=400)
+        else:
+            return JsonResponse({'error': f"Date and time are required for {item.tea_lesson.name}"}, status=400)
+
     # Prepare Stripe line items
     line_items = []
+    total_price = 0
     for item in cart.items.all():
+        total_price += item.quantity * item.tea_lesson.price
         line_items.append({
             'price_data': {
                 'currency': 'usd',
@@ -143,8 +161,8 @@ def stripe_checkout(request):
             'quantity': item.quantity,
         })
 
-    # Create Stripe Checkout Session
     try:
+        # Create Stripe Checkout Session
         session = stripe.checkout.Session.create(
             payment_method_types=['card'],
             line_items=line_items,
@@ -152,18 +170,60 @@ def stripe_checkout(request):
             success_url=request.build_absolute_uri('/success/'),
             cancel_url=request.build_absolute_uri('/displaycart'),
         )
-
-         # Clear the cart after session creation but before redirect
         return JsonResponse({'url': session.url})
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=500)
 
 
+
 def payment_success(request):
     cart = Cart.objects.filter(user=request.user).first()
+    if not cart or not cart.items.exists():
+        messages.error(request, "Your cart is empty.")
+        return redirect('displaycart')
+
+    # Create a Booking
+    total_price = sum(item.quantity * item.tea_lesson.price for item in cart.items.all())
+    booking = Booking.objects.create(user=request.user, total_price=total_price)
+
+    # Create BookingItems
+    for item in cart.items.all():
+        BookingItem.objects.create(
+            booking=booking,
+            tea_lesson=item.tea_lesson,
+            quantity=item.quantity,
+            selected_date=item.selected_date,
+            price=item.tea_lesson.price
+        )
+
+    # Clear the cart
     cart.items.all().delete()
-    cart.save()
-    return render(request, 'teabookings/success.html')
+
+    messages.success(request, "Your booking was successful!")
+    return render(request, 'teabookings/success.html', {'booking': booking})
+
+
+def displaybookings(request):
+    if not request.user.is_authenticated:
+        return redirect('login')
+
+    # Current bookings: filter items with a selected_date in the future
+    current_booking_items = BookingItem.objects.filter(
+        booking__user=request.user, 
+        selected_date__gte=now()
+    ).order_by('selected_date')
+
+    # Past bookings: filter items with a selected_date in the past
+    past_booking_items = BookingItem.objects.filter(
+        booking__user=request.user, 
+        selected_date__lt=now()
+    ).order_by('-selected_date')
+
+    return render(request, 'teabookings/bookings.html', {
+        'current_booking_items': current_booking_items,
+        'past_booking_items': past_booking_items,
+    })
+
 
 
 def search_tealessons(request):
@@ -196,21 +256,6 @@ def login_view(request):
         return render(request, "teabookings/login.html")
 
 
-def displaybookings(request):
-    if not request.user.is_authenticated:
-        return redirect('login')
-
-    current_bookings = CartItem.objects.filter(
-        cart__user=request.user, is_booked=True, selected_date__gte=now()
-    )
-    past_bookings = CartItem.objects.filter(
-        cart__user=request.user, is_booked=True, selected_date__lt=now()
-    )
-
-    return render(request, 'teabookings/bookings.html', {
-        'current_bookings': current_bookings,
-        'past_bookings': past_bookings,
-    })
 
 
 def logout_view(request):

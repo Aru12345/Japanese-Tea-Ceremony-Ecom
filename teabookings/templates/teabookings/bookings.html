@@ -1,18 +1,36 @@
 {% extends "teabookings/layout.html" %}
+{% load static %} 
+
 {% block body %}
 <div class="container">
     <h4>Current Bookings</h4>
-    {% for booking in current_bookings %}
-        <p>{{ booking.tea_lesson.name }} - {{ booking.selected_date }}</p>
-    {% empty %}
+    {% if current_booking_items %}
+        <ul>
+            {% for item in current_booking_items %}
+                <li>
+                    <strong>{{ item.tea_lesson.name }}</strong><br>
+                    Date: {{ item.selected_date|date:"Y-m-d" }}<br>
+                    Time: {{ item.selected_date|time:"H:i" }}
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
         <p>No current bookings.</p>
-    {% endfor %}
+    {% endif %}
 
     <h4>Past Bookings</h4>
-    {% for booking in past_bookings %}
-        <p>{{ booking.tea_lesson.name }} - {{ booking.selected_date }}</p>
-    {% empty %}
+    {% if past_booking_items %}
+        <ul>
+            {% for item in past_booking_items %}
+                <li>
+                    <strong>{{ item.tea_lesson.name }}</strong><br>
+                    Date: {{ item.selected_date|date:"Y-m-d" }}<br>
+                    Time: {{ item.selected_date|time:"H:i" }}
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
         <p>No past bookings.</p>
-    {% endfor %}
+    {% endif %}
 </div>
 {% endblock %}

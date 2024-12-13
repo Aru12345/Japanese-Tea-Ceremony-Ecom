@@ -4,10 +4,18 @@ document.addEventListener("DOMContentLoaded", function () {
     const removeButtons = document.querySelectorAll(".rbtn");
     const checkoutForm = document.getElementById("checkout-form");
 
+    const dateInputs = document.querySelectorAll("input[type='date']");
+    const timeInputs = document.querySelectorAll("input[type='time']")
 
     const searchInput = document.querySelector('.searchinput');
     const resultsContainer = document.querySelector('#resultsContainer');
     const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+    const today = new Date().toISOString().split('T')[0];
+
+    // Initial call to update the cart count when the page loads
+    updateCartCount();
+
    
     // Function to update the cart count dynamically
     function updateCartCount() {
@@ -80,39 +88,73 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
+
   
-    // Attach event listener to Checkout form
     if (checkoutForm) {
         checkoutForm.addEventListener("submit", async function (event) {
             event.preventDefault(); // Prevent the default form submission
             let allFieldsFilled = true;
-    
-            // Validate date and time inputs
-            const dateInputs = document.querySelectorAll("input[type='date']");
-            const timeInputs = document.querySelectorAll("input[type='time']");
-    
-            // Optimize validation using a single loop
-            for (const input of [...dateInputs, ...timeInputs]) {
-                if (!input.value) {
-                    allFieldsFilled = false;
-                    input.classList.add("is-invalid"); // Add a visual indicator
+             // Validate date and time inputs
+             const dateInputs = document.querySelectorAll("input[type='date']");
+             const timeInputs = document.querySelectorAll("input[type='time']");
+
+            dateInputs.forEach((dateInput) => {
+                const selectedDate = new Date(dateInput.value);
+                if (!dateInput.value || selectedDate < new Date(today)) {
+                    allFieldsValid = false;
+                    dateInput.classList.add("is-invalid");
                 } else {
-                    input.classList.remove("is-invalid");
+                    dateInput.classList.remove("is-invalid");
+                }
+            });
+
+            timeInputs.forEach((timeInput) => {
+                if (!timeInput.value) {
+                    allFieldsValid = false;
+                    timeInput.classList.add("is-invalid");
+                } else {
+                    timeInput.classList.remove("is-invalid");
+                }
+            });
+    
+            // Collect data for the request
+            const formData = new FormData();
+    
+           
+    
+            for (const dateInput of dateInputs) {
+                if (!dateInput.value) {
+                    allFieldsFilled = false;
+                    dateInput.classList.add("is-invalid"); // Add a visual indicator
+                } else {
+                    dateInput.classList.remove("is-invalid");
+                    formData.append(dateInput.name, dateInput.value); // Add date to the payload
+                }
+            }
+    
+            for (const timeInput of timeInputs) {
+                if (!timeInput.value) {
+                    allFieldsFilled = false;
+                    timeInput.classList.add("is-invalid");
+                } else {
+                    timeInput.classList.remove("is-invalid");
+                    formData.append(timeInput.name, timeInput.value); // Add time to the payload
                 }
             }
     
             if (!allFieldsFilled) {
                 alert("Please fill in all required date and time fields.");
-                return; 
+                return;
             }
+    
+            // Include the CSRF token in the request
+            formData.append("csrfmiddlewaretoken", document.querySelector("[name=csrfmiddlewaretoken]").value);
     
             // Proceed to Stripe Checkout
             try {
                 const response = await fetch(checkoutForm.action, {
                     method: "POST",
-                    headers: {
-                        "X-CSRFToken": document.querySelector("[name=csrfmiddlewaretoken]").value,
-                    },
+                    body: formData, // Send the form data
                 });
     
                 const data = await response.json();
@@ -128,6 +170,7 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         });
     }
+    
 
     searchInput.addEventListener('input', function () {
         const query = searchInput.value;
@@ -149,6 +192,5 @@ document.addEventListener("DOMContentLoaded", function () {
     });
     
 
-    // Initial call to update the cart count when the page loads
-    updateCartCount();
+    
 });
