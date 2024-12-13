@@ -2,6 +2,8 @@
 
 {% block body %}
 <a  href="{% url 'tealessons' %}" class="btn btn-primary">Back</a>
+<div id="resultsContainer" >
+<div class="row">
 {% for lesson in tea %}
 <div class="card col-lg-3 col-md-5 col-sm-10 eachcard" style="width:100%; height:25em">
     <img class="card-img-top" src="{{ lesson.imgUrl }}" alt="Tea Card" style="width:100%; height:51%">
@@ -16,4 +18,6 @@
 
 <p class="noresult">No results found.</p>
 {% endfor %}
+</div>
+</div>
 {% endblock %}
