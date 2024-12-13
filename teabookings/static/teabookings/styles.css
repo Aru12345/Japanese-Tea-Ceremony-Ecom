@@ -98,3 +98,14 @@ body{
 .search:hover {
     transform: scale(1.1); /* Slightly enlarge the button on hover */
 }
+
+.bookingheading{
+    color: white;
+    font-style: italic;
+}
+
+.bookinglist{
+    background-color: bisque;
+    border-radius: 10px;;
+    padding: 2%;
+}

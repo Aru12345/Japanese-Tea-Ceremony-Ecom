@@ -105,7 +105,7 @@ def displaycart(request):
         'cart_details': cart_details,
         'total_price': total_price,
         'today': now().date(),  # Pass today's date for validation in the template
-         'stripe_publishable_key': settings.STRIPE_PUBLISHABLE_KEY,
+        'stripe_publishable_key': settings.STRIPE_PUBLISHABLE_KEY,
     })
 
 

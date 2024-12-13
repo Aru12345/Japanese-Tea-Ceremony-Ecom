@@ -3,9 +3,9 @@
 
 {% block body %}
 <div class="container">
-    <h4>Current Bookings</h4>
+    <h4 class="bookingheading">Current Bookings</h4>
     {% if current_booking_items %}
-        <ul>
+        <ul  class="bookinglist">
             {% for item in current_booking_items %}
                 <li>
                     <strong>{{ item.tea_lesson.name }}</strong><br>
@@ -18,9 +18,9 @@
         <p>No current bookings.</p>
     {% endif %}
 
-    <h4>Past Bookings</h4>
+    <h4 class="bookingheading" >Past Bookings</h4>
     {% if past_booking_items %}
-        <ul>
+        <ul class="bookinglist">
             {% for item in past_booking_items %}
                 <li>
                     <strong>{{ item.tea_lesson.name }}</strong><br>
@@ -30,7 +30,7 @@
             {% endfor %}
         </ul>
     {% else %}
-        <p>No past bookings.</p>
+        <p class="bookingheading"> No past bookings.</p>
     {% endif %}
 </div>
 {% endblock %}

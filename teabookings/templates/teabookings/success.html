@@ -1,8 +1,10 @@
 {% extends "teabookings/layout.html" %}
+{% load static %} 
+
 {% block body %}
 <div class="container text-center">
-    <h2>Payment Successful!</h2>
-    <p>Thank you for your booking. You will receive an email with the details shortly.</p>
+    <h2 class="bookingheading">Payment Successful!</h2>
+    <p class="bookingheading">Thank you for your booking. You will receive an email with the details shortly.</p>
     <a href="{% url 'displaybookings' %}" class="btn btn-primary">View Bookings</a>
 </div>
 {% endblock %}

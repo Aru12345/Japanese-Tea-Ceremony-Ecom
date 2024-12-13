@@ -88,21 +88,21 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
-
-  
     if (checkoutForm) {
         checkoutForm.addEventListener("submit", async function (event) {
             event.preventDefault(); // Prevent the default form submission
-            let allFieldsFilled = true;
-             // Validate date and time inputs
-             const dateInputs = document.querySelectorAll("input[type='date']");
-             const timeInputs = document.querySelectorAll("input[type='time']");
+            let allFieldsValid = true; // Initialize the validation flag
+
+            // Validate date and time inputs
+            const dateInputs = document.querySelectorAll("input[type='date']");
+            const timeInputs = document.querySelectorAll("input[type='time']");
 
             dateInputs.forEach((dateInput) => {
                 const selectedDate = new Date(dateInput.value);
                 if (!dateInput.value || selectedDate < new Date(today)) {
                     allFieldsValid = false;
                     dateInput.classList.add("is-invalid");
+                    alert("Please select a valid date.");
                 } else {
                     dateInput.classList.remove("is-invalid");
                 }
@@ -112,53 +112,32 @@ document.addEventListener("DOMContentLoaded", function () {
                 if (!timeInput.value) {
                     allFieldsValid = false;
                     timeInput.classList.add("is-invalid");
+                    alert("Please select a valid time.");
                 } else {
                     timeInput.classList.remove("is-invalid");
                 }
             });
-    
-            // Collect data for the request
+
+            if (!allFieldsValid) {
+                return; // Prevent form submission if validation fails
+            }
+
+            // Proceed with form submission if all fields are valid
             const formData = new FormData();
-    
-           
-    
-            for (const dateInput of dateInputs) {
-                if (!dateInput.value) {
-                    allFieldsFilled = false;
-                    dateInput.classList.add("is-invalid"); // Add a visual indicator
-                } else {
-                    dateInput.classList.remove("is-invalid");
-                    formData.append(dateInput.name, dateInput.value); // Add date to the payload
-                }
-            }
-    
-            for (const timeInput of timeInputs) {
-                if (!timeInput.value) {
-                    allFieldsFilled = false;
-                    timeInput.classList.add("is-invalid");
-                } else {
-                    timeInput.classList.remove("is-invalid");
-                    formData.append(timeInput.name, timeInput.value); // Add time to the payload
-                }
-            }
-    
-            if (!allFieldsFilled) {
-                alert("Please fill in all required date and time fields.");
-                return;
-            }
-    
+            dateInputs.forEach((dateInput) => formData.append(dateInput.name, dateInput.value));
+            timeInputs.forEach((timeInput) => formData.append(timeInput.name, timeInput.value));
+
             // Include the CSRF token in the request
             formData.append("csrfmiddlewaretoken", document.querySelector("[name=csrfmiddlewaretoken]").value);
-    
-            // Proceed to Stripe Checkout
+
             try {
                 const response = await fetch(checkoutForm.action, {
                     method: "POST",
                     body: formData, // Send the form data
                 });
-    
+
                 const data = await response.json();
-    
+
                 if (data.url) {
                     // Redirect to Stripe Checkout URL
                     window.location.href = data.url;
@@ -170,6 +149,8 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         });
     }
+  
+   
     
 
     searchInput.addEventListener('input', function () {
