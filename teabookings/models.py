@@ -5,6 +5,12 @@ from django.db import models
 class User(AbstractUser):
     pass
 
+class Filter(models.Model):
+    filterName = models.CharField(max_length=30)
+
+    def __str__(self):
+        return self.filterName
+
 
 class TeaLesson(models.Model):
     name = models.CharField(max_length=35)
@@ -13,6 +19,8 @@ class TeaLesson(models.Model):
     itemsNeeded = models.CharField(max_length=1000)
     time = models.IntegerField()
     difficulty = models.CharField(max_length=15)
+    filter = models.ForeignKey(
+        Filter, on_delete=models.CASCADE, blank=True, null=True, related_name="filter")
     imgUrl = models.CharField(max_length=500)
     favorite = models.ManyToManyField(User, blank=True,related_name="favoritelist")
 

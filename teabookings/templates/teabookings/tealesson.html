@@ -7,8 +7,19 @@
    <div class="container ccon">
     <div class="row ">
       <div class="col-lg-6 col-sm-12">
-        <h1>Filter</h1>
-      </div>
+        <form action="{% url 'displayFilter' %}" method="POST" style="margin: 1%">
+            {% csrf_token %}
+            <label for="filter"></label>
+            <select name="filter" id="filter" style="height: 38px; font-size: 16px; padding: 5px; border-radius: 5px; border: 1px solid #ccc;">
+                <option value="all" class="ovalue">All</option>
+                {% for f in filter %}
+                    <option value="{{ f }}" class="ovalue">{{ f.filterName }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit" class="btn btn-primary" style="background-color:blue;">Filter</button>
+        </form>
+    </div>
+    
       <div class="col-lg-6 col-sm-12">
         <form class="form-inline" method="POST" action="{% url 'search_tealessons' %}">
           {% csrf_token %}

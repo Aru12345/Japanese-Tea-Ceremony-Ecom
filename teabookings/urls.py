@@ -16,6 +16,7 @@ urlpatterns = [
     path("removeFavorite/<int:id>/", views.removeFavList, name="removeFavList"),
     path("addFavorite/<int:id>", views.addFavList, name="addFavList"),
     path("displayFavorite/", views.displayFavorite, name="displayFavorite"),
+    path("displayFilter", views.displayFilter, name="displayFilter"),
     path("login", views.login_view, name="login"),
     path("logout", views.logout_view, name="logout"),
     path("register", views.register, name="register")

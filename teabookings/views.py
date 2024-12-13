@@ -13,7 +13,7 @@ from django.contrib.auth.decorators import login_required
 
 import stripe
 from django.conf import settings
-from .models import User, TeaLesson, Cart, CartItem,Booking,BookingItem
+from .models import User, TeaLesson, Cart, CartItem,Booking,BookingItem, Filter
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
 def index(request):
@@ -22,9 +22,32 @@ def index(request):
 
 def tealessons(request):
     tea = TeaLesson.objects.all()
+    filterList = Filter.objects.all()
     return render(request,"teabookings/tealesson.html",{
-        "tea" : tea
+        "tea" : tea,
+        "filter":filterList
     })
+
+# Category is filtered and displayed using user input
+def displayFilter(request):
+    if request.method == "POST":
+        filterSelected = request.POST['filter']
+        if filterSelected == "all":
+            currentLessons = TeaLesson.objects.all()  # Show all lessons
+        else:
+            try:
+                selectedFilter = Filter.objects.get(filterName=filterSelected)
+                currentLessons = TeaLesson.objects.filter(filter=selectedFilter)
+            except Filter.DoesNotExist:
+                currentLessons = TeaLesson.objects.none()
+        
+        filterList = Filter.objects.all()
+        return render(request, "teabookings/tealesson.html", {
+            "tea": currentLessons,  # Pass the filtered lessons
+            "filter": filterList  # Pass all filters for the dropdown
+        })
+
+
 
 
 def extradetails(request,id):
@@ -57,7 +80,7 @@ def displayFavorite(request):
     currentFavs = currentUser.favoritelist.all()
 
     return render(request, "teabookings/favorites.html", {
-         "favorites": currentFavs
+        "favorites": currentFavs
     })
 
 
