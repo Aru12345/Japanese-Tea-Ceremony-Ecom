@@ -14,7 +14,7 @@ class TeaLesson(models.Model):
     time = models.IntegerField()
     difficulty = models.CharField(max_length=15)
     imgUrl = models.CharField(max_length=500)
-    favorite = models.ManyToManyField(User, blank=True, null=True, related_name="favoritelist")
+    favorite = models.ManyToManyField(User, blank=True,related_name="favoritelist")
 
     def __str__(self):
         return self.name

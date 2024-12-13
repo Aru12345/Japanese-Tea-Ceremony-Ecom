@@ -8,6 +8,7 @@ from django.template.loader import render_to_string
 from django.db.models import Q
 from django.contrib import messages
 from datetime import datetime
+from django.contrib.auth.decorators import login_required
 
 
 import stripe
@@ -28,7 +29,37 @@ def tealessons(request):
 
 def extradetails(request,id):
     lesson = get_object_or_404(TeaLesson, id=id)
-    return render(request, 'teabookings/detail.html', {'lesson': lesson})
+    favInfo = request.user in lesson.favorite.all()
+    return render(request, 'teabookings/detail.html', {
+        'lesson': lesson,
+        'favInfo': favInfo                                              
+})
+
+def removeFavList(request, id):
+    teaInfo = TeaLesson.objects.get(pk=id)
+    currentUser = request.user
+    teaInfo.favorite.remove(currentUser)
+    return HttpResponseRedirect(reverse("extradetails", args=(id, )))
+
+
+
+# Adds an item to a users favlist
+def addFavList(request, id):
+    teaInfo = TeaLesson.objects.get(pk=id)
+    currentUser = request.user
+    teaInfo.favorite.add(currentUser)
+    return HttpResponseRedirect(reverse("extradetails", args=(id, )))
+
+
+# Displays all the listings in a users watchlist
+def displayFavorite(request):
+    currentUser = request.user
+    currentFavs = currentUser.favoritelist.all()
+
+    return render(request, "teabookings/favorites.html", {
+         "favorites": currentFavs
+    })
+
 
 
 def add_to_cart(request, lesson_id):
@@ -234,6 +265,9 @@ def search_tealessons(request):
 
     results = TeaLesson.objects.filter(Q(name__icontains=query)) if query else TeaLesson.objects.all()
     return render(request, 'teabookings/search_results.html', {'tea': results})
+
+
+
 
 
 def login_view(request):

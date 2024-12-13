@@ -1,0 +1,17 @@
+{% extends "teabookings/layout.html" %}
+{% load static %}
+
+
+{% block body %}
+
+    <div>
+        {% for lesson in favorites %}
+            <div class="favlesson">
+                
+                    <h6>{{ lesson.name }}</h6>
+                
+                <a href="{% url 'extradetails' lesson.id %}" class="btn btn-primary">View Lesson</a>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

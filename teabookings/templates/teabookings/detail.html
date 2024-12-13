@@ -13,6 +13,21 @@
     <p><strong>Items Needed:</strong> {{ lesson.itemsNeeded }}</p>
     <p><strong>Time:</strong> {{ lesson.time }} minutes</p>
     <p><strong>Difficulty:</strong> {{ lesson.difficulty }}</p>
+    {% if user.is_authenticated  %}
+    {% if favInfo %}
+    <form method="POST" action="{% url 'removeFavList' lesson.id %}">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger fav ">Remove from Favorites</button>
+    </form>
+{% else %}
+    <form method="POST" action="{% url 'addFavList' lesson.id %}">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-warning fav ">Favorite</button>
+    </form>
+{% endif %}
+
+    {% endif %}
+
     {% if user.is_authenticated %}
     <form method="POST" action="{% url 'add_to_cart' lesson.id %}">
         {% csrf_token %}
@@ -20,7 +35,7 @@
     </form>
     {% else %}
      <p class="info">Please Log In to Book a class</p>
-     {% endif %}
+    {% endif %}
     
     
     </div>

@@ -109,3 +109,12 @@ body{
     border-radius: 10px;;
     padding: 2%;
 }
+
+.fav{
+    margin-bottom: 1%;
+}
+.favlesson{
+    background-color: beige;
+    border-radius: 4px;
+    padding:3%
+}
