@@ -8,17 +8,18 @@ from django.db.models import Q
 from django.contrib import messages
 from datetime import datetime
 
-
-
 import stripe
 from django.conf import settings
 from .models import User, TeaLesson, Cart, CartItem,Booking,BookingItem, Filter
+
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
+# Home page view
 def index(request):
     return render(request, "teabookings/index.html")
 
 
+# Displays all tea lessons 
 def tealessons(request):
     tea = TeaLesson.objects.all()
     filterList = Filter.objects.all()
@@ -27,12 +28,12 @@ def tealessons(request):
         "filter":filterList
     })
 
-# Category is filtered and displayed using user input
+# Lessons are filtered and displayed using user input
 def displayFilter(request):
     if request.method == "POST":
         filterSelected = request.POST['filter']
         if filterSelected == "all":
-            currentLessons = TeaLesson.objects.all()  # Show all lessons
+            currentLessons = TeaLesson.objects.all()  # all lessons
         else:
             try:
                 selectedFilter = Filter.objects.get(filterName=filterSelected)
@@ -42,13 +43,12 @@ def displayFilter(request):
         
         filterList = Filter.objects.all()
         return render(request, "teabookings/tealesson.html", {
-            "tea": currentLessons,  # Pass the filtered lessons
-            "filter": filterList  # Pass all filters for the dropdown
+            "tea": currentLessons, 
+            "filter": filterList  
         })
 
 
-
-
+# View more details about tea lessons
 def extradetails(request,id):
     lesson = get_object_or_404(TeaLesson, id=id)
     favInfo = request.user in lesson.favorite.all()
@@ -57,12 +57,13 @@ def extradetails(request,id):
         'favInfo': favInfo                                              
 })
 
+
+# Removes a lesson from a users favorite list
 def removeFavList(request, id):
     teaInfo = TeaLesson.objects.get(pk=id)
     currentUser = request.user
     teaInfo.favorite.remove(currentUser)
     return HttpResponseRedirect(reverse("extradetails", args=(id, )))
-
 
 
 # Adds an item to a users favlist
@@ -73,26 +74,25 @@ def addFavList(request, id):
     return HttpResponseRedirect(reverse("extradetails", args=(id, )))
 
 
-# Displays all the listings in a users watchlist
+# Displays all the listings in a users favorite list
 def displayFavorite(request):
     currentUser = request.user
     currentFavs = currentUser.favoritelist.all()
-
     return render(request, "teabookings/favorites.html", {
         "favorites": currentFavs
     })
 
 
-
+# Adds a tea lessons to users cart or updates the quantity of item in cart
 def add_to_cart(request, lesson_id):
     if request.method == "POST":
         lesson = get_object_or_404(TeaLesson, id=lesson_id)
         user = request.user
 
         if not user.is_authenticated:
-            return redirect('login')  # Redirect to login if the user is not authenticated
+            return redirect('login')  
 
-        # Get or create cart for the logged-in user
+        # Get or create carte
         cart, _ = Cart.objects.get_or_create(user=user)
 
         # Add or update the item in the cart
@@ -103,10 +103,10 @@ def add_to_cart(request, lesson_id):
 
         # Redirect back to the detail page
         return redirect('extradetails', id=lesson_id)
-
     return redirect('index')
 
 
+# Returns the current cart count as JSON response
 def cart_count(request):
     if request.user.is_authenticated:
         cart = Cart.objects.filter(user=request.user).first()
@@ -115,16 +115,16 @@ def cart_count(request):
     return JsonResponse({"cart_count": 0})
 
 
-
+# Displays all the contents of cart
 def displaycart(request):
     if not request.user.is_authenticated:
-        return redirect('login')  # Redirect to login if the user is not authenticated
+        return redirect('login')  
 
-    # Get the cart for the logged-in user
+    # Get the cart for the logged in user
     cart = Cart.objects.filter(user=request.user).first()
     cart_items = cart.items.all() if cart else []  # Use empty list if no cart exists
 
-    # Add subtotals to each item and calculate total price
+    # Adding subtotals to each item to calculate total price
     cart_details = []
     total_price = 0
     for item in cart_items:
@@ -137,11 +137,11 @@ def displaycart(request):
             'price': item.tea_lesson.price,
             'quantity': item.quantity,
             'subtotal': subtotal,
-            'selected_date': item.selected_date  # Include the selected date
+            'selected_date': item.selected_date  
         })
 
     if request.method == "POST":
-        # Process selected dates and times
+        # Processing selected dates and times
         for item in cart_items:
             date_str = request.POST.get(f"date_{item.id}")
             time_str = request.POST.get(f"time_{item.id}")
@@ -151,31 +151,28 @@ def displaycart(request):
                 item.selected_date = selected_datetime
                 item.save()
 
-        # Redirect to Stripe checkout (implementation for Stripe to follow)
+        # Redirecting to Stripe checkout
         return redirect("stripe_checkout")
 
     return render(request, 'teabookings/cart.html', {
         'cart_details': cart_details,
         'total_price': total_price,
-        'today': now().date(),  # Pass today's date for validation in the template
+        'today': now().date(),  # Todays date to check for validations
         'stripe_publishable_key': settings.STRIPE_PUBLISHABLE_KEY,
     })
 
 
+# Removes an item from cart
 def remove_from_cart(request, item_id):
     if not request.user.is_authenticated:
         return redirect('login')
-
-    # Retrieve the cart item
-    cart_item = get_object_or_404(CartItem, id=item_id, cart__user=request.user)
-
-    # Delete the cart item
+    
+    cart_item = get_object_or_404(CartItem, id=item_id, cart__user=request.user) # Retrieving the cart item
     cart_item.delete()
-
-    # Redirect back to the cart page
     return redirect('displaycart')
 
 
+# Handles payment checkout with Stripe and 
 def stripe_checkout(request):
     if not request.user.is_authenticated:
         return JsonResponse({'error': 'User not authenticated'}, status=401)
@@ -198,7 +195,6 @@ def stripe_checkout(request):
         else:
             return JsonResponse({'error': f"Date and time are required for {item.tea_lesson.name}"}, status=400)
 
-    # Prepare Stripe line items
     line_items = []
     total_price = 0
     for item in cart.items.all():
@@ -228,7 +224,7 @@ def stripe_checkout(request):
         return JsonResponse({'error': str(e)}, status=500)
 
 
-
+# Handles successful booking creation and payment
 def payment_success(request):
     cart = Cart.objects.filter(user=request.user).first()
     if not cart or not cart.items.exists():
@@ -256,17 +252,18 @@ def payment_success(request):
     return render(request, 'teabookings/success.html', {'booking': booking})
 
 
+# Displays all current and past booking.
 def displaybookings(request):
     if not request.user.is_authenticated:
         return redirect('login')
 
-    # Current bookings: filter items with a selected_date in the future
+    # Current bookings
     current_booking_items = BookingItem.objects.filter(
         booking__user=request.user, 
         selected_date__gte=now()
     ).order_by('selected_date')
 
-    # Past bookings: filter items with a selected_date in the past
+    # Past bookings
     past_booking_items = BookingItem.objects.filter(
         booking__user=request.user, 
         selected_date__lt=now()
@@ -278,7 +275,7 @@ def displaybookings(request):
     })
 
 
-
+# Searches tea lessons by name
 def search_tealessons(request):
     if request.method == "POST":
         query = request.POST.get('search_query', '')
@@ -289,9 +286,7 @@ def search_tealessons(request):
     return render(request, 'teabookings/search_results.html', {'tea': results})
 
 
-
-
-
+# Logs a user in the application
 def login_view(request):
     if request.method == "POST":
 
@@ -312,13 +307,13 @@ def login_view(request):
         return render(request, "teabookings/login.html")
 
 
-
-
+# Logs a user out
 def logout_view(request):
     logout(request)
     return HttpResponseRedirect(reverse("index"))
 
 
+# Registers a new user
 def register(request):
     if request.method == "POST":
         username = request.POST["username"]

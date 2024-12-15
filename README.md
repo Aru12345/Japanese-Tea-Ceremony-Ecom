@@ -56,6 +56,6 @@
     - Run the development server
 
 ## Video
-    [Demo](https://www.youtube.com/watch?v=PsXSyu8GQVs)
+    Demo : https://www.youtube.com/watch?v=PsXSyu8GQVs
 
 

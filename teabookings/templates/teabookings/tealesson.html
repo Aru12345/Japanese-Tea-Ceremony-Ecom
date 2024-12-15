@@ -3,66 +3,45 @@
 
 {% block body %}
 
-   <p class="teah">Begin each class by diving deep into the origins, traditions, and stories that make the tea special. Then, follow a guided, step-by-step demonstration of traditional preparation methods, ensuring you master the art of brewing. To complete the experience, receive expert tips on ideal pairings and occasions to enjoy the tea</p>
-   <div class="container ccon">
+  <p class="teah">Begin each class by diving deep into the origins, traditions, and stories that make the tea special. Then, follow a guided, step-by-step demonstration of traditional preparation methods, ensuring you master the art of brewing. To complete the experience, receive expert tips on ideal pairings and occasions to enjoy the tea</p>
+  <div class="container ccon">
     <div class="row ">
       <div class="col-lg-6 col-md-8" >
         <form action="{% url 'displayFilter' %}" method="POST" style="margin: 1%">
-            {% csrf_token %}
-            <label for="filter"></label>
-            <select name="filter" id="filter" style="height: 37px; width:200px; font-size: 16px; padding: 5px; border-radius: 5px; border: 1px solid #ccc;">
-                <option value="all" class="ovalue">All</option>
-                {% for f in filter %}
-                    <option value="{{ f }}" class="ovalue">{{ f.filterName }}</option>
-                {% endfor %}
-            </select>
-            <button type="submit" class="btn btn-primary" style="background-color:blue;">Filter</button>
+          {% csrf_token %}
+          <label for="filter"></label>
+          <select name="filter" id="filter" style="height: 37px; width:200px; font-size: 16px; padding: 5px; border-radius: 5px; border: 1px solid #ccc;">
+            <option value="all" class="ovalue">All</option>
+            {% for f in filter %}
+              <option value="{{ f }}" class="ovalue">{{ f.filterName }}</option>
+            {% endfor %}
+          </select>
+          <button type="submit" class="btn btn-primary" style="background-color:blue;">Filter</button>
         </form>
       </div>
-    
       <div class="col-lg-6 col-md-8 col-sm-12" >
         <form class="form-inline" method="POST" action="{% url 'search_tealessons' %}">
           {% csrf_token %}
-          <input 
-          class="form-control searchinput" 
-          style="max-width: 210px;margin-right:10px;margin-left:7px" 
-              type="search" 
-              placeholder="Search" 
-              aria-label="Search" 
-              name="search_query" 
-              id="search-query"
-          >
+          <input class="form-control searchinput" style="max-width: 210px;margin-right:10px;margin-left:7px" type="search" placeholder="Search" aria-label="Search" name="search_query" id="search-query">
           <button class="btn my-2  my-sm-0 search" style="background-color:blue;" type="submit">🔍</button>
-      </form>
+        </form>
       <div>
     </div>
   </div>
-
-
- 
-       <!-- Dynamic search results will be inserted here -->
- 
- 
-
-
-
-   <div class="container ccon">
-   <div class="row ">
-
-   {% for lesson in tea %}
- 
-   <div class="card col-lg-3 col-md-5 col-sm-10 eachcard" style="width:100%; height:25em">
-    <img class="card-img-top" src="{{ lesson.imgUrl }}" alt="Tea Card" style="width:100%; height:51%">
-    <div class="card-body">
-      <h6 class="card-title ctitle">{{ lesson.name }}</h6>
-      <p class="card-text"> Price: {{ lesson.price }}$</p>
-      <p class="card-text"> Difficulty: {{ lesson.difficulty }} </p>
-      <a href="{% url 'extradetails' id=lesson.id  %}" class="btn btn-primary moredetails">View Details</a>
+  <div class="container ccon">
+    <div class="row ">
+      {% for lesson in tea %}
+        <div class="card col-lg-3 col-md-5 col-sm-10 eachcard" style="width:100%; height:25em">
+          <img class="card-img-top" src="{{ lesson.imgUrl }}" alt="Tea Card" style="width:100%; height:51%">
+          <div class="card-body">
+            <h6 class="card-title ctitle">{{ lesson.name }}</h6>
+            <p class="card-text"> Price: {{ lesson.price }}$</p>
+            <p class="card-text"> Difficulty: {{ lesson.difficulty }} </p>
+            <a href="{% url 'extradetails' id=lesson.id  %}" class="btn btn-primary moredetails">View Details</a>
+          </div> 
+        </div>
+      {% endfor%}
     </div>
- 
-</div>
-   {% endfor%}
-    </div>
-    </div>
+  </div>
 
 {% endblock %}

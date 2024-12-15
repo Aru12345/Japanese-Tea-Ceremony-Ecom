@@ -1,93 +1,95 @@
 body{
-    margin: 1%;
-    background:linear-gradient(90deg, #52cd52,#307f30, #42a74c,#228B22);
+  margin: 1%;
+  background:linear-gradient(90deg, #52cd52,#307f30, #42a74c,#228B22);
 }
 
 .main-heading{
-    color: azure;
-    font-style: italic;
-    opacity: 0.9;
-    text-shadow: 1px 1px 2px #aef9b5;
+  color: azure;
+  font-style: italic;
+  opacity: 0.9;
+  text-shadow: 1px 1px 2px #aef9b5;
 }
 
 .nav-link{
-    color: azure;
-    font-weight: bold;
+  color: azure;
+  font-weight: bold;
 }
 
 .nav-link:hover {
-    text-decoration: underline;
-    color: rgb(255, 223, 16);
-    
+  text-decoration: underline;
+  color: rgb(255, 223, 16);   
 }
 
 .main-content{
-    margin-top: 2%;
+  margin-top: 2%;
 }
+
 .main-introduction{
-    color: rgba(255, 255, 255, 0.876);
-    font-weight: bold;
-    font-style: italic;
-    display: flex;
-    justify-content: center;  /* Center horizontally */
-    align-items: center;      /* Center vertically */
-    height: 400px;
-   
+  color: rgba(255, 255, 255, 0.876);
+  font-weight: bold;
+  font-style: italic;
+  display: flex;
+  justify-content: center;  
+  align-items: center;     
+  height: 400px;   
 }
 
 .greeting {
-    color: rgb(255, 223, 16);
-    font-style: italic;
-    margin-left: 2%;
+  color: rgb(255, 223, 16);
+  font-style: italic;
+  margin-left: 2%;
 }
 
 .teah{
-    margin-left: 2%;
-    color: rgb(235, 244, 252);
-    font-style: italic;
-    font-weight: bold;
+  margin-left: 2%;
+  color: rgb(235, 244, 252);
+  font-style: italic;
+  font-weight: bold;
 }
 
 .noresult{
-    margin: 3%;
-    color: rgb(235, 244, 252);
-    font-style: italic;
-    font-weight: bold;
+  margin: 3%;
+  color: rgb(235, 244, 252);
+  font-style: italic;
+  font-weight: bold;
 }
 
 
 .eachcard{
-    margin: 4%;
+  margin: 4%;
 }
+
 .cardtext{
-    font-size: 200rem;
+  font-size: 200rem;
 }
+
 .ctitle{
- 
-    height: 20%;
+  height: 20%;
 }
+
 .card-title {
-    font-size: smaller;
+  font-size: smaller;
 }
 
 .card-text{
-    font-size: smaller;}
+  font-size: smaller
+}
+
 .moredetails{
-    background-color: rgb(0, 158, 105);
-    font-size: small;
+  background-color: rgb(0, 158, 105);
+  font-size: small;
 }
 
 .detail-card{
-    background-color: beige;
-    padding: 2%;
-    border-radius: 2%;
-    font-style: italic;
-    margin-top: 2%;
-
+  background-color: beige;
+  padding: 2%;
+  border-radius: 2%;
+  font-style: italic;
+  margin-top: 2%;
 }
 
 .info{
-   color: rgb(126, 158, 0);
+  color: rgb(126, 158, 0);
 }
 
 .cartUI{
@@ -96,38 +98,39 @@ body{
 }
 
 .search:hover {
-    transform: scale(1.1); /* Slightly enlarge the button on hover */
+  transform: scale(1.1); 
 }
 
 .bookingheading{
-    color: white;
-    font-style: italic;
-   
+  color: white;
+  font-style: italic;  
 }
 
 .bookinglist{
-    background-color: bisque;
-    border-radius: 10px;;
-    padding: 4%;
+  background-color: bisque;
+  border-radius: 10px;;
+  padding: 4%;
 }
 
 .fav{
-    margin-bottom: 1%;
+  margin-bottom: 1%;
 }
+
 .favlesson{
-    background-color: beige;
-    border-radius: 4px;
-    padding:1%;
-    margin-bottom: 1%;
+  background-color: beige;
+  border-radius: 4px;
+  padding:1%;
+  margin-bottom: 1%;
 }
 
 .ovalue{
-    height: 125%;
+  height: 125%;
 }
 
 .logheading{
-    color: aliceblue;
+  color: aliceblue;
 }
+
 .logheading a{
-    color: aqua;
+  color: aqua;
 }

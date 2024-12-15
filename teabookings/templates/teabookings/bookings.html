@@ -3,34 +3,36 @@
 
 {% block body %}
 <div class="container">
-    <h4 class="bookingheading">Current Bookings</h4>
-    {% if current_booking_items %}
-        <ul  class="bookinglist">
-            {% for item in current_booking_items %}
-                <li>
-                    <strong>{{ item.tea_lesson.name }}</strong><br>
-                    Date: {{ item.selected_date|date:"Y-m-d" }}<br>
-                    Time: {{ item.selected_date|time:"H:i" }}
-                </li>
-            {% endfor %}
-        </ul>
-    {% else %}
-        <p>No current bookings.</p>
-    {% endif %}
 
-    <h4 class="bookingheading" >Past Bookings</h4>
-    {% if past_booking_items %}
-        <ul class="bookinglist">
-            {% for item in past_booking_items %}
-                <li>
-                    <strong>{{ item.tea_lesson.name }}</strong><br>
-                    Date: {{ item.selected_date|date:"Y-m-d" }}<br>
-                    Time: {{ item.selected_date|time:"H:i" }}
-                </li>
-            {% endfor %}
-        </ul>
-    {% else %}
-        <p class="bookingheading"> No past bookings.</p>
-    {% endif %}
+  <h4 class="bookingheading">Current Bookings</h4>
+  {% if current_booking_items %}
+    <ul  class="bookinglist">
+      {% for item in current_booking_items %}
+        <li>
+          <strong>{{ item.tea_lesson.name }}</strong><br>
+          Date: {{ item.selected_date|date:"Y-m-d" }}<br>
+          Time: {{ item.selected_date|time:"H:i" }}
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p class="bookingheading">No current bookings.</p>
+  {% endif %}
+
+  <h4 class="bookingheading" >Past Bookings</h4>
+  {% if past_booking_items %}
+    <ul class="bookinglist">
+      {% for item in past_booking_items %}
+        <li>
+          <strong>{{ item.tea_lesson.name }}</strong><br>
+          Date: {{ item.selected_date|date:"Y-m-d" }}<br>
+          Time: {{ item.selected_date|time:"H:i" }}
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p class="bookingheading"> No past bookings.</p>
+  {% endif %}
+  
 </div>
 {% endblock %}
