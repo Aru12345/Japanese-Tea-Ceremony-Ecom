@@ -4,11 +4,10 @@ from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
 from django.utils.timezone import now
-from django.template.loader import render_to_string
 from django.db.models import Q
 from django.contrib import messages
 from datetime import datetime
-from django.contrib.auth.decorators import login_required
+
 
 
 import stripe

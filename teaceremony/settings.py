@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 
-import environ
+import environ # type: ignore
 import os
 from pathlib import Path
 
